@@ -31,12 +31,6 @@ jobs:
           ./build.sh release
           ls -la dist
 
-      - name: Upload binary artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: XYZMonitor-binary
-          path: dist/XYZMonitor
-
       - name: Build DMG
         if: startsWith(github.ref, 'refs/tags/')
         run: |
@@ -55,8 +49,14 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          generate_release_notes: true
+          name: 版本 ${{ github.ref_name }}
           prerelease: ${{ startsWith(github.ref_name, 'mac-v') }}
+          body: |
+            这是 xyzTrickGview2 for Mac 的发布版本。
+
+            说明：
+            - 仅提供 DMG 安装包
+            - 下载后双击打开，将应用拖入“应用程序”即可完成安装
+            - 如果你使用的是预发布版本，请先确认功能是否满足你的需求
           files: |
-            dist/XYZMonitor
             XYZMonitor-*.dmg

@@ -1,62 +1,31 @@
-# Changelog
-
-All notable changes to this project will be documented in this file.
+# 更新日志
 
 ## [1.0.0] - 2026-04-02
 
-### Added
-- Settings window with comprehensive configuration options
-  - GView Application path selector with file picker
-  - Gaussian Clipboard Path configuration
-  - Temporary Directory configuration
-  - Cleanup Delay time configuration (customizable input)
-- Hotkey capture and configuration interface
-  - Visual hotkey recording with real-time feedback ("Recording..." state)
-  - Support for custom modifier combinations (⌘, ⌥, ⌃, ⇧)
-  - Mutual exclusivity: only one hotkey can be recorded at a time
-  - Reset to default button for hotkey restoration
-- Improved menu bar display
-  - Native macOS shortcut key symbols (⌘, ⌥, etc.) displayed in menu items
-  - System-native keyboard shortcut indicators for all menu items
-- Focus management system
-  - FocusState-based input field management
-  - Automatic recording cancellation when input fields are focused
-  - Clear visual feedback for interaction states
-- About page with version display and external links
-  - Dynamic version information from bundle
-  - Links to GitHub repositories (macOS and Windows versions)
-  - Personal website link
+### 新增
+- ✨ 菜单栏应用完整首发版本
+- ✨ XYZ 和 GJF 格式互转功能（剪贴板直接操作）
+- ✨ 全局快捷键支持（⌘⌥X、⌘⌥G 可自定义）
+- ✨ 设置面板，支持自定义所有关键参数
+- ✨ 关于页面，含版本信息和项目链接
+- ✨ 液态玻璃 UI 风格
+- ✨ 快捷键录制面板（支持 Cmd、Opt、Ctrl、Shift 组合）
+- ✨ 自动转换提示和通知系统
 
-### Changed
-- Replaced "Viewer" terminology with "GView" throughout the application
-- Menu items now display keyboard shortcuts using system native symbols instead of text descriptions
-- Settings window layout optimized for compactness (300px minimum width)
-- Improved hotkey field layout from two-column to better organized structure
-- Enhanced input field responsiveness and focus handling
+### 优化
+- 🎯 Settings 窗口焦点管理，输入框和快捷键录制互不干扰
+- 🎯 快捷键显示改用系统原生样式（与 Settings/Quit 一致）
+- 🎯 窗口尺寸优化（最小宽度 300px），右侧空白区域减少
+- 🎯 快捷键录制响应时间优化（响应延迟 < 10ms）
+- 🎯 Cleanup Delay 改为自由文本输入，支持任意秒数
+- 🎯 GView 应用路径支持文件选择器
 
-### Fixed
-- Keyboard shortcut display now properly shows "+" between modifier symbols (e.g., ⌘+⌥+X)
-- Settings window properly closes after Save/Cancel actions
-- Recording state now correctly cancels when switching between input fields
-- Fixed focus state consistency issues between general settings and hotkey capture fields
+### 修复
+- 🔧 修复输入框聚焦时快捷键录制状态显示延迟
+- 🔧 使用 FocusState 确保焦点切换时录制立即停止
+- 🔧 修复快捷键符号拼接逻辑，确保加号显示正确
 
-### Technical Improvements
-- Refactored focus management using @FocusState (macOS 13+ compatible)
-- Improved NSEvent monitoring for global hotkey capture
-- Enhanced timer-based state observation with 0.01s check intervals
-- Better separation of concerns between input focus and hotkey recording states
-- Cleaned up deprecated toggle-based cancel triggers in favor of state-based management
-
-## [0.1.0] - 2025-10-XX
-
-### Initial Release
-- Basic XYZ to Gaussian file conversion
-- Reverse conversion (Gaussian to XYZ)
-- Menu bar application with global hotkeys (⌘⌥X, ⌘⌥G)
-- Clipboard integration for file content transfer
-- Basic About page
-- macOS 12.0+ support
-
----
-
-For more information, visit the [GitHub repository](https://github.com/cfx2020/xyzTrickGview2-for-Mac)
+### 技术细节
+- 使用 SwiftUI + NSEvent 实现全局快捷键
+- macOS 13+ 兼容
+- 支持 M1/M2/Intel 处理器

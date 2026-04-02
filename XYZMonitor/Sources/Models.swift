@@ -53,8 +53,8 @@ enum ConversionError: LocalizedError {
 // MARK: - Codable Models
 
 struct ConfigData: Codable {
-    var hotkeyXyzToGview: String = "cmd+alt+x"
-    var hotkeyGviewToXyz: String = "cmd+alt+g"
+    var hotkeyXyzToGview: String = "⌘⌥X"
+    var hotkeyGviewToXyz: String = "⌘⌥G"
     var viewerCommand: String = "/Applications/GaussianView.app/Contents/MacOS/GaussianView"
     var tempDirectory: String = "/tmp/xyz_monitor"
     var cleanupDelaySeconds: Int = 5

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>XYZMonitor</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.xyzmonitor.macos</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>XYZ Monitor</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>12.0</string>
+	<key>NSMainNibFile</key>
+	<string></string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSRequiresIPhoneOS</key>
+	<false/>
+	<key>UIMainStoryboardFile</key>
+	<string></string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array/>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>XYZ Monitor does not require network access</string>
+	<key>NSBonjourServices</key>
+	<array/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>XYZ Monitor does not require Bluetooth</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>XYZ Monitor does not require Bluetooth</string>
+	<key>NSCameraUsageDescription</key>
+	<string>XYZ Monitor does not require camera access</string>
+	<key>NSContactsUsageDescription</key>
+	<string>XYZ Monitor does not require contacts access</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>XYZ Monitor does not require calendar access</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>XYZ Monitor does not require reminders access</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>XYZ Monitor does not require location access</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>XYZ Monitor does not require location access</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>XYZ Monitor does not require location access</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>XYZ Monitor does not require microphone access</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>XYZ Monitor does not require photo library access</string>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>XYZ Monitor uses AppleEvents to open external applications</string>
+	<key>NSSystemAdministrationUsageDescription</key>
+	<string>XYZ Monitor requires accessibility permissions to register global hotkeys</string>
+</dict>
+</plist>

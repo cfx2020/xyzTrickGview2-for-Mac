@@ -1,151 +1,95 @@
-# xyzTrickGview2 for Mac
+# XYZMonitor for Mac
 
-A native macOS implementation of the XYZ Monitor molecular structure converter, built with SwiftUI.
+这是 [xyzTrickGview2](https://github.com/bane-dysta/xyzTrickGview2) 的一个原生的 macOS 版本，基于 SwiftUI 实现，使用 Swift 重写，用于将 XYZ 结构快速打开到Gaussview中，并支持反向转换。
 
-## Features
+![alt text](2B7E0E26-9114-4528-B7ED-1137C7144440_4_5005_c.jpeg)
 
-- **Clipboard-based workflow**: Copy XYZ coordinates → press hotkey → view in GaussianView (or other molecular viewers)
-- **Reverse conversion**: Convert structures back to XYZ format for data pipelines
-- **Menu bar integration**: Lightweight system tray app with quick access menu
-- **Global hotkeys**: Customizable keyboard shortcuts for instant conversion
-- **Zero-interference**: Temporary files auto-deleted after viewing
-- **Configuration panel**: Easy setup UI for paths, hotkeys, and preferences
+## 功能
 
-## Requirements
+- **剪贴板工作流**：复制 XYZ 坐标后按快捷键，自动调用外部查看器打开结构
+- **反向转换**：把查看器里的结构导回为 XYZ 文本
+- **菜单栏运行**：以菜单栏应用的形式运行，轻量且不占桌面
+- **全局热键**：可自定义快捷键，快速触发转换
+- **临时文件自动清理**：打开后自动删除中间文件
+- **设置界面**：可配置查看器路径、热键和日志
 
-- macOS 12.0 or later
-- Xcode 15+ (for building from source)
-- A molecular viewer (GaussianView, MOPAC, etc.) - configurable
+## 运行要求
 
-## Quick Start
+- macOS 12.0 或更高版本
+- Xcode 15 或更高版本（用于从源码构建）
 
-### Build from source (command line):
+## 快速开始
+
+### Github release
+
+直接从 [release](https://github.com/cfx2020/xyzTrickGview2-for-Mac/releases) 界面下载 dmg 文件
+
+### 命令行构建
 
 ```bash
 chmod +x build.sh
 ./build.sh release
 ```
 
-This produces a standalone executable in `dist/XYZMonitor`.
+构建完成后会生成可执行文件到 `dist/XYZMonitor`。
 
-### Or build with Xcode:
+### 使用 Xcode 构建
 
 ```bash
 open Package.swift
-# Click "Build" in Xcode (⌘B)
+# 然后在 Xcode 里按 ⌘B 构建
 ```
 
-### Create a DMG for distribution:
+### 生成 DMG
 
 ```bash
 chmod +x create-dmg.sh
 ./create-dmg.sh dist/XYZMonitor XYZMonitor.dmg
 ```
 
-## Usage
+## 使用方法
 
-1. **Launch the app**: The icon appears in the menu bar (top-right).
-2. **Configure viewer path**: Click menu → Preferences → General → set your molecular viewer path.
-3. **Convert XYZ → Viewer**:
-   - Copy XYZ format coordinates (from terminal, text editor, etc.)
-   - Press hotkey (default: `⌘⌥X`)
-   - Molecular viewer opens automatically
-4. **Convert back to XYZ**:
-   - Press hotkey (default: `⌘⌥G`)
-   - Paste your structure text in the dialog
-   - XYZ format is copied to clipboard
+1. 启动应用后，菜单栏会出现图标。
+2. 在“Settings”里配置Gaussview路径。
+3. 复制一段 XYZ 文本。
+4. 按默认快捷键 `⌘⌥X`，应用会调用Gaussview打开结构。
+5. 需要反向转换时，在 Gaussview 中复制结构，按默认快捷键 `⌘⌥G`，转换为 xyz 到剪贴板。
 
-## Configuration
+## 配置项
 
-Settings are stored in macOS UserDefaults and persist across sessions:
+设置会保存到 macOS 的 UserDefaults 中：
 
-- `hotkey_xyz_to_gview`: Hotkey for XYZ→viewer (default: `cmd+alt+x`)
-- `hotkey_gview_to_xyz`: Hotkey for reverse conversion (default: `cmd+alt+g`)
-- `viewer_command`: Path to molecular viewer executable
-- `temp_directory`: Where to store temporary files
-- `cleanup_delay_seconds`: How long before auto-deleting temp files (default: 5s)
-- `log_level`: Logging verbosity (DEBUG/INFO/WARNING/ERROR)
-- `log_file_path`: Optional log file location
+- `hotkey_xyz_to_gview`：XYZ → 查看器，默认 `cmd+alt+x`
+- `hotkey_gview_to_xyz`：查看器 → XYZ，默认 `cmd+alt+g`
+- `viewer_command`：查看器路径
+- `temp_directory`：临时文件目录
+- `cleanup_delay_seconds`：临时文件清理延迟
+- `log_level`：日志级别
+- `log_file_path`：日志文件路径
 
-## Architecture
+## 目录说明
 
-- **XYZMonitorApp.swift**: SwiftUI app entry point and Settings window
-- **AppDelegate.swift**: Menu bar management, hotkey dispatch, file operations
-- **Models.swift**: Data structures (Atom, Molecule, ConfigData, etc.)
-- **ConverterService.swift**: XYZ↔GJF parsing and generation
-- **ClipboardService.swift**: macOS NSPasteboard wrapper
-- **HotkeyService.swift**: Global hotkey registration (Carbon framework)
-- **ConfigStore.swift**: Configuration persistence (UserDefaults)
-- **Logger.swift**: File and console logging
-- **ConfigurationView.swift**: SwiftUI preferences UI
+- `XYZMonitor/Sources/AppDelegate.swift`：菜单栏、热键和打开文件逻辑
+- `XYZMonitor/Sources/ConverterService.swift`：XYZ 与 GJF / 文本转换
+- `XYZMonitor/Sources/ClipboardService.swift`：剪贴板读写
+- `XYZMonitor/Sources/HotkeyService.swift`：全局热键注册
+- `XYZMonitor/Sources/ConfigStore.swift`：设置持久化
+- `XYZMonitor/Sources/ConfigurationView.swift`：设置界面
+- `XYZMonitor/Sources/Logger.swift`：日志输出
 
-## Feature Parity with Windows App
 
-| Feature | Windows | macOS |
-|---------|---------|-------|
-| Clipboard XYZ import | ✓ | ✓ |
-| Open in external viewer | ✓ | ✓ |
-| Reverse conversion | ✓ | ✓ |
-| Global hotkeys | ✓ | ✓ (subject to macOS permissions) |
-| Config UI | ✓ | ✓ |
-| Menu bar / Tray | ✓ (tray) | ✓ (menu bar) |
-| Auto-temp cleanup | ✓ | ✓ |
-| Plugin system | ✓ | — (planned as native extensions) |
+## 开发
 
-## Limitations & Differences
-
-1. **Gaussian Clipboard file (.frg)**: macOS version does not require this Windows-specific binary format. Conversion is text-based.
-2. **Global hotkeys**: Requires Accessibility permissions in System Preferences → Security & Privacy.
-3. **No .exe plugins**: macOS extensions will follow a different model (Swift/SwiftUI-based).
-
-## Troubleshooting
-
-### Hotkeys don't work
-- Check System Preferences → Security & Privacy → Accessibility
-- Ensure XYZ Monitor is in the list with "Allow" enabled
-- Restart the app after granting permissions
-
-### Viewer doesn't open
-- Verify the path in Preferences → General → Viewer Application is correct
-- Ensure the viewer application exists and is executable
-
-### Temp files not cleaning up
-- Check `temp_directory` setting is writable
-- Increase `cleanup_delay_seconds` if viewer is slow to start
-- Check logs: `~/Library/Application Support/XYZMonitor/xyz_monitor.log`
-
-## Development
-
-### Run in debug mode:
+### 调试构建
 
 ```bash
 swift build -c debug
 .build/debug/XYZMonitor
 ```
 
-### Run tests:
-
-```bash
-swift test
-```
-
-### View logs:
+### 查看日志
 
 ```bash
 tail -f ~/Library/Application\ Support/XYZMonitor/xyz_monitor.log
 ```
 
-## License
-
-Same as parent xyzTrickGview2 repository.
-
-## Upstream Acknowledgement
-
-This project originated from ideas and workflows in the upstream `xyzTrickGview2` project.
-If you need the original Windows-oriented implementation, refer to the upstream repository.
-
----
-
-**Version**: 1.0.0  
-**Platform**: macOS 12.0+  
-**Language**: Swift 5.9+ (SwiftUI)

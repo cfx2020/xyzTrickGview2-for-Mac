@@ -16,6 +16,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         setupStatusBar()
         setupHotkeys()
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadHotkeys), name: .xyzMonitorConfigDidSave, object: nil)
         
         // Hide dock icon (menu bar only app)
         NSApp.setActivationPolicy(.accessory)
@@ -34,21 +35,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         let menu = NSMenu()
-        let convertXyzItem = NSMenuItem(title: "Convert XYZ → GView (⌘⌥X)", action: #selector(convertXyzToGview), keyEquivalent: "")
+        menu.showsStateColumn = false
+        let convertXyzItem = NSMenuItem(title: "Convert XYZ → GView", action: #selector(convertXyzToGview), keyEquivalent: "x")
         convertXyzItem.target = self
+        convertXyzItem.keyEquivalentModifierMask = [.command, .option]
         menu.addItem(convertXyzItem)
 
-        let convertGviewItem = NSMenuItem(title: "Convert GView → XYZ (⌘⌥G)", action: #selector(convertGviewToXyz), keyEquivalent: "")
+        let convertGviewItem = NSMenuItem(title: "Convert GView → XYZ", action: #selector(convertGviewToXyz), keyEquivalent: "g")
         convertGviewItem.target = self
+        convertGviewItem.keyEquivalentModifierMask = [.command, .option]
         menu.addItem(convertGviewItem)
         menu.addItem(NSMenuItem.separator())
-        let preferencesItem = NSMenuItem(title: "Preferences", action: #selector(openPreferences), keyEquivalent: ",")
+        let preferencesItem = NSMenuItem(title: "Settings", action: #selector(openPreferences), keyEquivalent: ",")
         preferencesItem.target = self
+        preferencesItem.indentationLevel = 0
         menu.addItem(preferencesItem)
-        menu.addItem(NSMenuItem.separator())
         let aboutItem = NSMenuItem(title: "About XYZ Monitor", action: #selector(openAbout), keyEquivalent: "")
         aboutItem.target = self
+        aboutItem.indentationLevel = 0
         menu.addItem(aboutItem)
+        menu.addItem(NSMenuItem.separator())
 
         let quitItem = NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         quitItem.target = NSApp
@@ -66,7 +72,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.convertGviewToXyz()
             }
         }
-        hotkeyService?.registerHotkeys()
+        hotkeyService?.registerHotkeys(
+            xyzShortcut: configStore.hotkeyXyzToGview,
+            gviewShortcut: configStore.hotkeyGviewToXyz
+        )
+    }
+
+    @objc private func reloadHotkeys() {
+        hotkeyService?.registerHotkeys(
+            xyzShortcut: configStore.hotkeyXyzToGview,
+            gviewShortcut: configStore.hotkeyGviewToXyz
+        )
+        logger.info("Global hotkeys reloaded from settings")
     }
     
     @objc func convertXyzToGview() {
@@ -110,7 +127,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 backing: .buffered,
                 defer: false
             )
-            window.title = "Preferences"
+            window.title = "Settings"
             window.center()
             window.isReleasedWhenClosed = false
             window.contentView = NSHostingView(

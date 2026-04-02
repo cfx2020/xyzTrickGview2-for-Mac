@@ -54,6 +54,7 @@ hdiutil create \
 
 hdiutil attach "$RW_DMG" -mountpoint "$MOUNT_DIR" -nobrowse -noverify >/dev/null
 
+if [ -z "${CI:-}" ]; then
 osascript <<EOF
 tell application "Finder"
     tell disk "$VOLUME_NAME"
@@ -92,6 +93,9 @@ tell application "Finder"
     end tell
 end tell
 EOF
+else
+    echo "CI environment detected, skipping Finder layout customization"
+fi
 
 sync
 hdiutil detach "$MOUNT_DIR" >/dev/null

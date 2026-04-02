@@ -13,6 +13,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         logger.info("XYZ Monitor macOS app launched")
+
+        if let appIcon = makeCubeTransparentImage() {
+            NSApp.applicationIconImage = appIcon
+        }
         
         setupStatusBar()
         setupHotkeys()
@@ -30,7 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         
         if let button = statusItem?.button {
-            let image = NSImage(systemSymbolName: "cube.transparent", accessibilityDescription: "XYZ Monitor")
+            let image = makeCubeTransparentImage()
             button.image = image
         }
         
@@ -61,6 +65,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(quitItem)
         
         statusItem?.menu = menu
+    }
+
+    private func makeCubeTransparentImage() -> NSImage? {
+        NSImage(systemSymbolName: "cube.transparent", accessibilityDescription: "XYZ Monitor")
     }
     
     private func setupHotkeys() {

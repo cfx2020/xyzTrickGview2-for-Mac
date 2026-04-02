@@ -33,6 +33,8 @@ chmod +x build.sh
 
 构建完成后会生成可执行文件到 `dist/XYZMonitor`。
 
+同时会生成发布用应用包到 `dist/XYZ Monitor.app`。
+
 ### 使用 Xcode 构建
 
 ```bash
@@ -44,7 +46,7 @@ open Package.swift
 
 ```bash
 chmod +x create-dmg.sh
-./create-dmg.sh dist/XYZMonitor XYZMonitor.dmg
+./create-dmg.sh "dist/XYZ Monitor.app" XYZMonitor.dmg
 ```
 
 ## 使用方法

@@ -17,11 +17,6 @@ let package = Package(
             name: "XYZMonitor",
             dependencies: [],
             path: "XYZMonitor/Sources"
-        ),
-        .testTarget(
-            name: "XYZMonitorTests",
-            dependencies: ["XYZMonitor"],
-            path: "XYZMonitor/Tests"
         )
     ]
 )

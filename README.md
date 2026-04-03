@@ -24,6 +24,13 @@
 
 直接从 [release](https://github.com/cfx2020/xyzTrickGview2-for-Mac/releases) 界面下载 dmg 文件
 
+安装完成后在终端输入:
+
+```bash
+xattr -dr com.apple.quarantine "/Applications/XYZ Monitor.app"
+```
+随后打开应用
+
 ### 命令行构建
 
 ```bash

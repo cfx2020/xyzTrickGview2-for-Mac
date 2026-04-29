@@ -13,11 +13,13 @@ class ConfigStore: ObservableObject {
     @Published var gaussianClipboardPath: String = "/Applications/g16/scratch"
     @Published var tempDirectory: String = "/tmp/xyz_monitor"
     @Published var cleanupDelaySeconds: Int = 5
+    @Published var launchAtLogin: Bool = false
     @Published var logLevel: String = "INFO"
     @Published var logFilePath: String = ""
     
     private let defaults = UserDefaults.standard
     private let logger = Logger.shared
+    private let launchAtLoginService = LaunchAtLoginService.shared
     
     private init() {
         loadConfiguration()
@@ -32,6 +34,7 @@ class ConfigStore: ObservableObject {
         tempDirectory = defaults.string(forKey: "temp_directory") ?? "/tmp/xyz_monitor"
         cleanupDelaySeconds = defaults.integer(forKey: "cleanup_delay_seconds")
         if cleanupDelaySeconds == 0 { cleanupDelaySeconds = 5 }
+        launchAtLogin = launchAtLoginService.isEnabled
         logLevel = defaults.string(forKey: "log_level") ?? "INFO"
         logFilePath = defaults.string(forKey: "log_file_path") ?? ""
         
@@ -41,7 +44,10 @@ class ConfigStore: ObservableObject {
         }
     }
     
-    func saveConfiguration() {
+    func saveConfiguration() throws {
+        try launchAtLoginService.setEnabled(launchAtLogin)
+        launchAtLogin = launchAtLoginService.isEnabled
+
         defaults.set(hotkeyXyzToGview, forKey: "hotkey_xyz_to_gview")
         defaults.set(hotkeyGviewToXyz, forKey: "hotkey_gview_to_xyz")
         defaults.set(viewerCommand, forKey: "viewer_command")

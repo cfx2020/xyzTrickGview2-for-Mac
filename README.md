@@ -15,7 +15,7 @@
 
 ## 运行要求
 
-- macOS 12.0 或更高版本
+- macOS 13.0 或更高版本
 - Xcode 15 或更高版本（用于从源码构建）
 
 ## 快速开始
@@ -73,6 +73,7 @@ chmod +x create-dmg.sh
 - `viewer_command`：查看器路径
 - `temp_directory`：临时文件目录
 - `cleanup_delay_seconds`：临时文件清理延迟
+- `Launch at Login`：在 Settings 中控制是否登录 macOS 后自动启动
 - `log_level`：日志级别
 - `log_file_path`：日志文件路径
 
@@ -101,4 +102,3 @@ swift build -c debug
 ```bash
 tail -f ~/Library/Application\ Support/XYZMonitor/xyz_monitor.log
 ```
-

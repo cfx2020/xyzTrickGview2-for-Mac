@@ -5,6 +5,7 @@ struct ConfigurationView: View {
     @EnvironmentObject var configStore: ConfigStore
     @State private var showFilePicker = false
     @State private var recordingField: String? = nil
+    @State private var saveErrorMessage: String? = nil
     
     var body: some View {
         VStack(spacing: 0) {
@@ -29,9 +30,13 @@ struct ConfigurationView: View {
                 .keyboardShortcut(.cancelAction)
                 
                 Button(action: {
-                    configStore.saveConfiguration()
-                    if let window = NSApplication.shared.keyWindow {
-                        window.close()
+                    do {
+                        try configStore.saveConfiguration()
+                        if let window = NSApplication.shared.keyWindow {
+                            window.close()
+                        }
+                    } catch {
+                        saveErrorMessage = error.localizedDescription
                     }
                 }) {
                     Text("Save")
@@ -53,6 +58,16 @@ struct ConfigurationView: View {
                 }
             }
         )
+        .alert("Settings Save Failed", isPresented: Binding(
+            get: { saveErrorMessage != nil },
+            set: { if !$0 { saveErrorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {
+                saveErrorMessage = nil
+            }
+        } message: {
+            Text(saveErrorMessage ?? "")
+        }
     }
 }
 
@@ -133,6 +148,16 @@ struct GeneralTab: View {
                     
                     Spacer()
                 }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            // Launch at Login
+            VStack(alignment: .leading, spacing: 6) {
+                Toggle(isOn: $configStore.launchAtLogin) {
+                    Label("Launch at Login", systemImage: "power")
+                        .fontWeight(.semibold)
+                }
+                .toggleStyle(.checkbox)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             

@@ -24,7 +24,7 @@ class ConverterService {
     private init() {}
     
     func convertXyzToGjf(_ xyzText: String) throws -> ConversionResult {
-        let lines = xyzText.split(separator: "\n", omittingEmptySubsequences: true).map(String.init)
+        let lines = splitLinesPreservingXyzHeader(xyzText)
         guard !lines.isEmpty else { throw ConversionError.emptyInput }
         
         // Parse XYZ format
@@ -50,7 +50,7 @@ class ConverterService {
             guard parts.count >= 4 else { continue }
             
             if let x = Double(parts[1]), let y = Double(parts[2]), let z = Double(parts[3]) {
-                let symbol = parts[0].uppercased()
+                let symbol = try normalizeElementSymbol(parts[0])
                 let atomNumber = atomicNumbers[symbol] ?? 0
                 atoms.append(Atom(symbol: symbol, x: x, y: y, z: z, atomicNumber: atomNumber))
             }
@@ -99,45 +99,70 @@ class ConverterService {
         return formatXyz(atoms: atoms, comment: "Converted from Gaussian clipboard")
     }
     
+    private func splitLinesPreservingXyzHeader(_ text: String) -> [String] {
+        var normalized = text.replacingOccurrences(of: "\r\n", with: "\n")
+        normalized = normalized.replacingOccurrences(of: "\r", with: "\n")
+        var lines = normalized.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+
+        while lines.last?.isEmpty == true {
+            lines.removeLast()
+        }
+
+        return lines
+    }
+
+    private func normalizeElementSymbol(_ rawSymbol: String) throws -> String {
+        let trimmed = rawSymbol.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            throw ConversionError.parseError("Missing element symbol")
+        }
+
+        let normalized = trimmed.prefix(1).uppercased() + trimmed.dropFirst().lowercased()
+        guard atomicNumbers[normalized] != nil else {
+            throw ConversionError.parseError("Unknown element symbol: \(rawSymbol)")
+        }
+
+        return normalized
+    }
+
     private func parseXyz(_ lines: [String]) throws -> Molecule {
         var atoms: [Atom] = []
         var comment = ""
-        var atomCount = 0
-        var currentAtomIndex = 0
-        
-        for (index, line) in lines.enumerated() {
-            let trimmed = line.trimmingCharacters(in: .whitespaces)
-            
-            // First line: atom count
-            if index == 0 {
-                if let count = Int(trimmed) {
-                    atomCount = count
-                    continue
-                }
+
+        guard lines.count >= 2 else {
+            throw ConversionError.parseError("XYZ input must include atom count and comment lines")
+        }
+
+        guard let atomCount = Int(lines[0].trimmingCharacters(in: .whitespacesAndNewlines)), atomCount > 0 else {
+            throw ConversionError.parseError("First XYZ line must be a positive atom count")
+        }
+
+        comment = lines[1].trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard lines.count >= atomCount + 2 else {
+            throw ConversionError.parseError("Expected \(atomCount) atom lines, got \(max(0, lines.count - 2))")
+        }
+
+        for atomIndex in 0..<atomCount {
+            let lineIndex = atomIndex + 2
+            let trimmed = lines[lineIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+            let parts = trimmed.split(whereSeparator: { $0 == " " || $0 == "\t" }).map(String.init)
+
+            guard parts.count >= 4 else {
+                throw ConversionError.parseError("Invalid atom line \(atomIndex + 1): expected symbol and 3 coordinates")
             }
-            
-            // Second line: comment
-            if index == 1 {
-                comment = trimmed
-                continue
+
+            guard let x = Double(parts[1]), let y = Double(parts[2]), let z = Double(parts[3]) else {
+                throw ConversionError.parseError("Invalid coordinates on atom line \(atomIndex + 1)")
             }
-            
-            // Atom lines
-            if currentAtomIndex < atomCount {
-                let parts = trimmed.split(separator: " ", omittingEmptySubsequences: true).map(String.init)
-                
-                guard parts.count >= 4 else { continue }
-                guard let x = Double(parts[1]), let y = Double(parts[2]), let z = Double(parts[3]) else { continue }
-                
-                let symbol = parts[0].uppercased()
-                let atomNumber = atomicNumbers[symbol] ?? 0
-                
-                atoms.append(Atom(symbol: symbol, x: x, y: y, z: z, atomicNumber: atomNumber))
-                currentAtomIndex += 1
-            }
+
+            let symbol = try normalizeElementSymbol(parts[0])
+            let atomNumber = atomicNumbers[symbol] ?? 0
+
+            atoms.append(Atom(symbol: symbol, x: x, y: y, z: z, atomicNumber: atomNumber))
         }
         
-        guard atoms.count == atomCount else { 
+        guard atoms.count == atomCount, !atoms.isEmpty else {
             throw ConversionError.parseError("Expected \(atomCount) atoms, got \(atoms.count)")
         }
         

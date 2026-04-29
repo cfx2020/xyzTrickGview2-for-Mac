@@ -2,6 +2,7 @@ build/
 dist/
 .build/
 .swiftpm/
+codestable/
 .DS_Store
 *.xcworkspace/
 xcuserdata/
